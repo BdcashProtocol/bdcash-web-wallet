@@ -1,0 +1,88 @@
+@import "~bulma/sass/utilities/_all";
+$primary: #D8213B;
+$primary-invert: findColorInvert($primary);
+$twitter: #4099FF;
+$twitter-invert: findColorInvert($twitter);
+
+.text-left, .text-left input, .text-left textarea{
+    text-align: left!important;
+}
+
+button:hover{
+    cursor:pointer!important;
+}
+
+.pos-btn{
+    width:33%;
+    display:inline-block;
+    height:9.5vh;
+    font-size:20px;
+    line-height:12vh;
+    text-align:center;
+}
+
+.text-center{
+    text-align: center;
+}
+
+.main{
+    margin-top:30px;    
+}
+
+$colors: (
+    "white": ($white, $black),
+    "black": ($black, $white),
+    "light": ($light, $light-invert),
+    "dark": ($dark, $dark-invert),
+    "primary": ($primary, $primary-invert),
+    "info": ($info, $info-invert),
+    "success": ($success, $success-invert),
+    "warning": ($warning, $warning-invert),
+    "danger": ($danger, $danger-invert),
+    "twitter": ($twitter, $twitter-invert)
+);
+
+body, html{
+    font-family: 'Sen';
+}
+
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary;
+
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
+
+body, html, .button{
+    font-family: "Sen"!important;
+}
+
+.social-shares span:hover{
+    cursor:pointer!important;
+    opacity:0.4!important;
+}
+.fullscreen-modal .modal-close:after, .fullscreen-modal .modal-close:before{
+    background-color:#666!important
+}
+
+.select, select{
+    width:100%;
+}
+
+h1{
+    font-size:24px!important;
+    font-weight: bold;
+    margin-bottom:10px!important;
+}
+
+.upload-draggable, .upload{
+    width:100%!important;
+}
+
+.text-center{
+    text-align:center;
+}
+
+.text-center input{
+    text-align: center!important;
+}
