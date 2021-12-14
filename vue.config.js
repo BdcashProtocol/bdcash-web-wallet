@@ -3,12 +3,12 @@ module.exports = {
     popup: {
       template: 'public/browser-extension.html',
       entry: './src/popup/main.js',
-      title: 'BDCash web Wallet'
+      title: 'BDCash Web Wallet'
     },
     standalone: {
       template: 'public/browser-extension.html',
       entry: './src/standalone/main.js',
-      title: 'BDCash web Wallet',
+      title: 'BDCash Web Wallet',
       filename: 'index.html'
     }
   },
