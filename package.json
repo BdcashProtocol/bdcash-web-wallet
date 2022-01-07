@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@dicebear/avatars": "^4.5.2",
-    "@bdcash-protocol/core": "^1.0.8",
-    "@bdcash-protocol/login": "^1.0.0",
+    "@bdcash-protocol/core": "^1.1.0",
+    "@bdcash-protocol/login": "^1.0.2",
     "apexcharts": "^3.23.0",
     "axios": "^0.21.0",
     "buefy": "^0.9.4",

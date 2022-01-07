@@ -136,7 +136,7 @@
               </div>
               <a
                 :href="
-                  'https://chains.planum.dev/#/transaction/' +
+                  'https://dev.bdcashprotocol.com/#/transaction/' +
                   chain +
                   '/' +
                   tx.sxid
@@ -172,7 +172,7 @@
 </template>
 
 <script>
-let ScryptaCore = require("@scrypta/core");
+let BDCashCore = require("@bdcash-protocol/core");
 import User from "../libs/user";
 const t2d = require("timestamp-to-date");
 
@@ -181,7 +181,7 @@ export default {
   props: ["chain"],
   data() {
     return {
-      scrypta: new ScryptaCore(true),
+      bdcash: new BDCashCore(true),
       configs: {},
       wallet: "",
       chunkSize: 5,
@@ -196,7 +196,7 @@ export default {
       },
       series: [
         {
-          name: "LYRA",
+          name: "BDCASH",
           data: [],
         },
       ],
@@ -213,11 +213,11 @@ export default {
   },
   async mounted() {
     const app = this;
-    app.scrypta.staticnodes = true
+    app.bdcash.staticnodes = true
     app.wallet = await User.auth();
     if (app.wallet !== false) {
       app.configs = await User.configs();
-      app.ticker = "LYRA";
+      app.ticker = "BDCASH";
       await app.fetchTransactions();
       app.isLoading = false;
       setInterval(function () {
@@ -231,7 +231,7 @@ export default {
       return new Promise(async (response) => {
         app.series[0].data = [];
 
-        let sidechains = await app.scrypta.get("/sidechain/list");
+        let sidechains = await app.bdcash.get("/sidechain/list");
         for (let x in sidechains.data) {
           let sidechain = sidechains.data[x];
           if (sidechain.address === app.chain) {
@@ -240,12 +240,12 @@ export default {
           }
         }
 
-        let balance = await app.scrypta.post("/sidechain/balance", {
+        let balance = await app.bdcash.post("/sidechain/balance", {
           dapp_address: app.wallet.master,
           sidechain_address: app.chain,
         });
         app.balance = balance.balance;
-        let transactions = await app.scrypta.post("/sidechain/transactions", {
+        let transactions = await app.bdcash.post("/sidechain/transactions", {
           dapp_address: app.wallet.master,
           sidechain_address: app.chain,
         });

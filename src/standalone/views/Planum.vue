@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  let ScryptaCore = require("@scrypta/core")
+  let BDCashCore = require("@bdcash-protocol/core")
   import User from '../../libs/user'
   import AssetDash from '../../components/AssetDash'
 
@@ -14,18 +14,18 @@
     components: { AssetDash },
     data() {
       return {
-        scrypta: new ScryptaCore(true),
+        bdcash: new BDCashCore(true),
         isLogging: true,
         isLoading: true
       };
     },
     async mounted() {
       const app = this;
-      app.scrypta.staticnodes = true
+      app.bdcash.staticnodes = true
       app.wallet = await User.auth()
       if(app.wallet !== false){
         app.configs = await User.configs()
-        app.ticker = 'LYRA'
+        app.ticker = 'BDCASH'
       }
     },
   };

@@ -280,14 +280,14 @@ ul {
 .taginput .is-active.taginput-container.is-focusable,
 .is-active.textarea,
 .is-active.input {
-  border-bottom: 2px solid #d8213b !important;
+  border-bottom: 2px solid #d8c621 !important;
 }
 </style>
 <script>
-const ScryptaCore = require("@scrypta/core");
+const BDCashCore = require("@bdcash-protocol/core");
 const User = require("../libs/user");
 import passwordMeter from "vue-simple-password-meter";
-const ScryptaLogin = require("@scrypta/login");
+const BdcashLogin = require("@bdcash-protocol/login");
 import jsQR from "jsqr";
 
 var video;
@@ -311,8 +311,8 @@ export default {
   data() {
     return {
       standaloneURL: "",
-      scrypta: new ScryptaCore(true),
-      scryptalogin: new ScryptaLogin(true),
+      bdcash: new BDCashCore(true),
+      bdcashlogin: new BdcashLogin(true),
       user: User,
       error: false,
       recover: false,
@@ -353,7 +353,7 @@ export default {
         app.password !== "" &&
         app.password.length > 0
       ) {
-        app.newSeed = await app.scrypta.createAddress(
+        app.newSeed = await app.bdcash.createAddress(
           app.password,
           true,
           app.label
@@ -381,7 +381,7 @@ export default {
         app.password !== "" &&
         app.password.length > 0
       ) {
-        app.newSeed = await app.scrypta.buildxSid(
+        app.newSeed = await app.bdcash.buildxSid(
           app.password,
           "latin",
           true,
@@ -418,7 +418,7 @@ export default {
           app.passwordrepeat !== ""
         ) {
           if (app.password === app.passwordrepeat) {
-            let wallet = await app.scrypta.importPrivateKey(
+            let wallet = await app.bdcash.importPrivateKey(
               app.privkey,
               app.password,
               false
@@ -437,13 +437,13 @@ export default {
           });
         }
       }
-      await app.scrypta.saveWallet(sid, app.label);
+      await app.bdcash.saveWallet(sid, app.label);
       app.$emit("logged", sid);
     },
     async selectMethod(what) {
       const app = this;
       if (what === "manentapp") {
-        app.remoterequest = await app.scryptalogin.listen(function (connected) {
+        app.remoterequest = await app.bdcashlogin.listen(function (connected) {
           app.importSid("remote", connected);
         });
       }

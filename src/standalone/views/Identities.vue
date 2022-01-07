@@ -124,7 +124,7 @@ export default {
   name: "Identities",
   data() {
     return {
-      scrypta: new BDCashCore(true),
+      bdcash: new BDCashCore(true),
       db: new BdcashDB(true),
       standaloneURL: "",
       showLogin: false,
@@ -140,7 +140,7 @@ export default {
   async mounted() {
     const app = this;
     app.wallet = await User.auth();
-    app.scrypta.staticnodes = true
+    app.bdcash.staticnodes = true
     app.isLogging = false;
     if (navigator.userAgent.indexOf("Firefox") === -1) {
       if(chrome !== undefined && chrome.runtime !== undefined && chrome.runtime.getURL !== undefined){
@@ -160,7 +160,7 @@ export default {
       app.sid = await app.db.get("wallet");
       let xsid = await app.db.get("xsid");
       for(let k in xsid){
-        let master = await app.scrypta.deriveKeyfromXPub(xsid[k].xpub, 'm/0')
+        let master = await app.bdcash.deriveKeyfromXPub(xsid[k].xpub, 'm/0')
         xsid[k].master = master.pub
       }
       app.xsid = xsid

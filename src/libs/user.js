@@ -1,10 +1,10 @@
-let ScryptaCore = require("@scrypta/core")
-const scrypta = new ScryptaCore(true)
-const ScryptaDB = require('./db')
-const db = new ScryptaDB(true)
+let BDCashCore = require("@bdcash-protocol/core")
+const bdcash = new BDCashCore(true)
+const BdcashDB = require('./db')
+const db = new BdcashDB(true)
 
 module.exports.auth = async function auth(id) {
-    let wallet = await scrypta.returnDefaultxSid()
+    let wallet = await bdcash.returnDefaultxSid()
     let defaultid = await localStorage.getItem('default')
     if(id !== undefined && id !== null && id.length > 0){
         defaultid = id
@@ -15,7 +15,7 @@ module.exports.auth = async function auth(id) {
                 let SIDS = wallet.split(":")
                 let xpub = SIDS[0];
                 wallet = await db.get('xsid', 'xpub', xpub)
-                let master = await scrypta.deriveKeyfromXPub(xpub, 'm/0')
+                let master = await bdcash.deriveKeyfromXPub(xpub, 'm/0')
                 return {
                     xsid: wallet.wallet,
                     xpub: xpub,
@@ -26,13 +26,13 @@ module.exports.auth = async function auth(id) {
                 return false
             }
         }else{
-            await scrypta.importBrowserSID()
-            let defaultid = await scrypta.returnDefaultIdentity()
+            await bdcash.importBrowserSID()
+            let defaultid = await bdcash.returnDefaultIdentity()
             if(defaultid !== false && defaultid !== ''){
                 try{
                     let SIDS = defaultid.split(":")
                     let address = SIDS[0];
-                    wallet = await scrypta.returnIdentity(address)
+                    wallet = await bdcash.returnIdentity(address)
                     return {
                         sid: wallet.wallet,
                         address: address,
@@ -48,7 +48,7 @@ module.exports.auth = async function auth(id) {
                 if(xsid.length > 0){
                     let SIDS = xsid[0].wallet.split(":")
                     let xpub = SIDS[0];
-                    let master = await scrypta.deriveKeyfromXPub(xpub, 'm/0')
+                    let master = await bdcash.deriveKeyfromXPub(xpub, 'm/0')
                     return {
                         xsid: xsid[0].wallet,
                         xpub: xpub,
@@ -73,7 +73,7 @@ module.exports.auth = async function auth(id) {
         if(defaultid.indexOf('xpub') !== -1){
             let SIDS = defaultid.split(':')
             let wallet = await db.get('xsid', 'xpub', SIDS[0])
-            let master = await scrypta.deriveKeyfromXPub(wallet.xpub, 'm/0')
+            let master = await bdcash.deriveKeyfromXPub(wallet.xpub, 'm/0')
             return {
                 xsid: wallet.wallet,
                 xpub: wallet.xpub,

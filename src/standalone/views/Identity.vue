@@ -38,8 +38,8 @@
         <br />
         <p>
           Those names are managed by
-          <a href="https://names.scryptachain.org" target="_blank"
-            >Scrypta Decentralized Names</a
+          <a href="https://names.bdcashchain.org" target="_blank"
+            >bdcash Decentralized Names</a
           >
           dApp and will allow people find you by using this name.
           <span style="color: #f00"
@@ -203,7 +203,7 @@
           </header>
           <section class="modal-card-body text-center" style="width: 450px">
             <div v-if="!canRegister">
-              If the name is available the registration will cost 10 LYRA,
+              If the name is available the registration will cost 50 BDCASH,
               please make sure you have enough balance.
               <br /><br />
               <b-input
@@ -223,7 +223,7 @@
               >
             </div>
             <div v-if="canRegister">
-              You're registering <b>{{ name }}</b> spending 10 LYRA.
+              You're registering <b>{{ name }}</b> spending 50 BDCASH.
               <br /><br />
               <input
                 type="password"
@@ -262,7 +262,7 @@ export default {
   name: "Identities",
   data() {
     return {
-      scrypta: new BDCashCore(true),
+      bdcash: new BDCashCore(true),
       db: new BdcashDB(true),
       address: "",
       wallet: "",
@@ -308,7 +308,7 @@ export default {
   async mounted() {
     const app = this;
     app.wallet = await User.auth();
-    app.scrypta.staticnodes = true;
+    app.bdcash.staticnodes = true;
     app.isLogging = false;
     app.identity = app.$route.params.identity;
     app.getIdentity();
@@ -327,8 +327,8 @@ export default {
       if (app.identity.indexOf("xpub") !== -1) {
         app.details = await app.db.get("xsid", "xpub", app.identity);
         let ban = ["register:turinglabs"];
-        let address = await app.scrypta.createAddress("-", false);
-        let request = await app.scrypta.createContractRequest(
+        let address = await app.bdcash.createAddress("-", false);
+        let request = await app.bdcash.createContractRequest(
           address.walletstore,
           "-",
           {
@@ -337,9 +337,9 @@ export default {
             params: {},
           }
         );
-        let response = await app.scrypta.sendContractRequest(request);
+        let response = await app.bdcash.sendContractRequest(request);
         let registered = [];
-        let master = await app.scrypta.deriveKeyfromXPub(app.identity, "m/0");
+        let master = await app.bdcash.deriveKeyfromXPub(app.identity, "m/0");
         for (let k in response) {
           if (
             response[k].owner === master.pub &&
@@ -360,8 +360,8 @@ export default {
         app.name = app.name.toLowerCase();
         app.name = app.name.replace(/ /g, "-");
         app.name = app.name.replace(/[^\w\s]/gi, "");
-        let address = await app.scrypta.createAddress("-", false);
-        let request = await app.scrypta.createContractRequest(
+        let address = await app.bdcash.createAddress("-", false);
+        let request = await app.bdcash.createContractRequest(
           address.walletstore,
           "-",
           {
@@ -370,7 +370,7 @@ export default {
             params: { name: app.name },
           }
         );
-        let response = await app.scrypta.sendContractRequest(request);
+        let response = await app.bdcash.sendContractRequest(request);
         if (response.address === undefined) {
           app.$buefy.toast.open({
             message: "This name is available! Register it!",
@@ -388,22 +388,22 @@ export default {
     },
     async registerName() {
       const app = this;
-      let master = await app.scrypta.readxKey(app.password, app.details.wallet);
+      let master = await app.bdcash.readxKey(app.password, app.details.wallet);
       if (master !== false) {
-        let key = await app.scrypta.deriveKeyFromSeed(master.seed, "m/0");
-        let masterkey = await app.scrypta.importPrivateKey(key.prv, "-", false);
-        let balance = await app.scrypta.get("/balance/" + key.pub);
+        let key = await app.bdcash.deriveKeyFromSeed(master.seed, "m/0");
+        let masterkey = await app.bdcash.importPrivateKey(key.prv, "-", false);
+        let balance = await app.bdcash.get("/balance/" + key.pub);
         app.isRegistering = true
-        if (balance.balance >= 10.002) {
-          let fee = await app.scrypta.send(
+        if (balance.balance >= 50.002) {
+          let fee = await app.bdcash.send(
             masterkey.walletstore,
             "-",
             "LSJq6a6AMigCiRHGrby4TuHeGirJw2PL5c",
-            10
+            50
           );
           if (fee.length === 64) {
             setTimeout(async function () {
-              let written = await app.scrypta.write(
+              let written = await app.bdcash.write(
                 masterkey.walletstore,
                 "-",
                 "register:" + app.name,
@@ -531,17 +531,17 @@ export default {
         app.newpassword === app.repeatnewpassword
       ) {
         if (app.identity.indexOf("xpub") !== -1) {
-          let check = await app.scrypta.readxKey(
+          let check = await app.bdcash.readxKey(
             app.password,
             app.details.wallet
           );
           if (check !== false) {
             let xSIDS = app.details.wallet.split(":");
-            let mnemonic = await app.scrypta.decryptData(
+            let mnemonic = await app.bdcash.decryptData(
               xSIDS[1],
               app.password
             );
-            let updated = await app.scrypta.buildxSid(
+            let updated = await app.bdcash.buildxSid(
               app.newpassword,
               "latin",
               false,
@@ -566,12 +566,12 @@ export default {
             });
           }
         } else {
-          let check = await app.scrypta.readKey(
+          let check = await app.bdcash.readKey(
             app.password,
             app.details.wallet
           );
           if (check !== false) {
-            let updated = await app.scrypta.importPrivateKey(
+            let updated = await app.bdcash.importPrivateKey(
               check.prv,
               app.newpassword,
               false
@@ -605,7 +605,7 @@ export default {
     downloadSid() {
       const app = this;
       var a = document.getElementById("downloadsid");
-      var file = new Blob([app.details.wallet], { type: "scryptaid" });
+      var file = new Blob([app.details.wallet], { type: "bdcashid" });
       a.href = URL.createObjectURL(file);
       a.download = app.details.label + ".sid";
       var clickEvent = new MouseEvent("click", {
@@ -618,7 +618,7 @@ export default {
     downloadxSid() {
       const app = this;
       var a = document.getElementById("downloadxsid");
-      var file = new Blob([app.details.wallet], { type: "scryptaxid" });
+      var file = new Blob([app.details.wallet], { type: "bdcashxid" });
       a.href = URL.createObjectURL(file);
       a.download = app.details.label + ".xsid";
       var clickEvent = new MouseEvent("click", {
@@ -671,7 +671,7 @@ export default {
         },
         trapFocus: false,
         onConfirm: async (password) => {
-          let key = await app.scrypta.readKey(password, app.details.wallet);
+          let key = await app.bdcash.readKey(password, app.details.wallet);
           if (key !== false) {
             app.$buefy.dialog.alert(
               app.$t("identities.privkeyis") +
@@ -698,10 +698,10 @@ export default {
         trapFocus: false,
         onConfirm: async (password) => {
           try {
-            let key = await app.scrypta.readxKey(password, app.details.wallet);
+            let key = await app.bdcash.readxKey(password, app.details.wallet);
             if (key !== false) {
               let xSIDS = app.details.wallet.split(":");
-              let decrypted = await app.scrypta.decryptData(xSIDS[1], password);
+              let decrypted = await app.bdcash.decryptData(xSIDS[1], password);
               if (decrypted.split(" ").length === 24) {
                 app.$buefy.dialog.alert(
                   app.$t("identities.mnemonicis") +

@@ -139,7 +139,7 @@
               </div>
               <a
                 :href="
-                  'https://explorer.scryptachain.org/transaction/' + tx.txid
+                  'https://insight.bdcashprotocol.com/transaction/' + tx.txid
                 "
                 target="_blank"
               >
@@ -172,15 +172,15 @@
 </template>
 
 <script>
-let ScryptaCore = require("@scrypta/core");
+let BDCashCore = require("@bdcash-protocol/core");
 import User from "../libs/user";
 const t2d = require("timestamp-to-date");
 
 export default {
-  name: "LyraDash",
+  name: "BdcashDash",
   data() {
     return {
-      scrypta: new ScryptaCore(true),
+      bdcash: new BDCashCore(true),
       configs: {},
       wallet: "",
       chunkSize: 5,
@@ -194,7 +194,7 @@ export default {
       },
       series: [
         {
-          name: "LYRA",
+          name: "BDCASH",
           data: [],
         },
       ],
@@ -212,10 +212,10 @@ export default {
   async mounted() {
     const app = this;
     app.wallet = await User.auth();
-    app.scrypta.staticnodes = true
+    app.bdcash.staticnodes = true
     if (app.wallet !== false) {
       app.configs = await User.configs();
-      app.ticker = "LYRA";
+      app.ticker = "BDCASH";
       await app.fetchTransactions();
       app.isLoading = false;
       setInterval(function () {
@@ -227,11 +227,11 @@ export default {
     fetchTransactions() {
       const app = this;
       return new Promise(async (response) => {
-        let balance = await app.scrypta.get("/balance/" + app.wallet.master);
+        let balance = await app.bdcash.get("/balance/" + app.wallet.master);
         app.balance = balance.balance;
         app.options.xaxis.categories = [];
         app.series[0].data = [];
-        app.transactions = await app.scrypta.get(
+        app.transactions = await app.bdcash.get(
           "/transactions/" + app.wallet.master
         );
         let transactions = app.transactions.data.reverse();
@@ -337,7 +337,7 @@ export default {
       } catch (e) {
         app.error = "NaN";
       }
-      if (app.configs.chain === "LYRA") {
+      if (app.configs.chain === "BDCASH") {
         let val = (value / 1).toFixed(8).replace(".", ",");
         return val;
       } else {

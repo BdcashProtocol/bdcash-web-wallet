@@ -1,7 +1,7 @@
-let ScryptaCore = require("@scrypta/core")
-const scrypta = new ScryptaCore(true)
-const ScryptaDB = require('./db')
-const db = new ScryptaDB(true)
+let BDCashCore = require("@bdcash-protocol/core")
+const bdcash = new BDCashCore(true)
+const BdcashDB = require('./db')
+const db = new BdcashDB(true)
 
 module.exports.check = async function check() {
     return new Promise(response => {

@@ -195,8 +195,8 @@
 </template>
 
 <script>
-const ScryptaCore = require("@scrypta/core");
-const ScryptaDB = require("../libs/db");
+const BDCashCore = require("@bdcash-protocol/core");
+const BdcashDB = require("../libs/db");
 const User = require("../libs/user");
 import Create from "../components/Create.vue";
 import Dapp from "../libs/dapp.js";
@@ -207,8 +207,8 @@ export default {
   data() {
     return {
       standaloneURL: "",
-      scrypta: new ScryptaCore(true),
-      db: new ScryptaDB(true),
+      bdcash: new BDCashCore(true),
+      db: new BdcashDB(true),
       user: User,
       dapp: Dapp,
       error: false,
@@ -277,7 +277,7 @@ export default {
     } else {
       app.wallet = await app.user.auth();
     }
-    let balance = await app.scrypta.get("/balance/" + app.wallet.master);
+    let balance = await app.bdcash.get("/balance/" + app.wallet.master);
     app.balance = balance.balance;
   },
   methods: {
@@ -290,7 +290,7 @@ export default {
       app.sid = await app.db.get("wallet");
       app.xsid = await app.db.get("xsid");
       for (let k in app.xsid) {
-        let master = await app.scrypta.deriveKeyfromXPub(
+        let master = await app.bdcash.deriveKeyfromXPub(
           app.xsid[k].xpub,
           "m/0"
         );
@@ -318,15 +318,15 @@ export default {
         let key;
         let SIDS;
         if (app.wallet !== false && app.wallet.sid !== undefined) {
-          key = await app.scrypta.readKey(app.password, app.wallet.sid);
+          key = await app.bdcash.readKey(app.password, app.wallet.sid);
           if (key !== false) {
             key.sid = app.wallet.sid;
           }
         } else if (app.wallet.xsid !== undefined) {
-          let xkey = await app.scrypta.readxKey(app.password, app.wallet.xsid);
+          let xkey = await app.bdcash.readxKey(app.password, app.wallet.xsid);
           if (xkey !== false) {
-            key = await app.scrypta.deriveKeyFromSeed(xkey.seed, "m/0");
-            let importkey = await app.scrypta.importPrivateKey(
+            key = await app.bdcash.deriveKeyFromSeed(xkey.seed, "m/0");
+            let importkey = await app.bdcash.importPrivateKey(
               key.prv,
               app.password,
               false
@@ -341,14 +341,14 @@ export default {
 
           let estimatedlength = app.tosign.tosign;
           let fees = Math.ceil(app.tosign.tosign / 7500) * 0.001;
-          let balance = await app.scrypta.get("/balance/" + key.address);
+          let balance = await app.bdcash.get("/balance/" + key.address);
 
           if (balance.balance >= parseFloat(fees)) {
-            let signed = await app.scrypta.signRawTransaction(
+            let signed = await app.bdcash.signRawTransaction(
               app.tosign.tosign,
               key.prv
             );
-            let sent = await app.scrypta.sendRawTransaction(signed);
+            let sent = await app.bdcash.sendRawTransaction(signed);
             if (sent.length === 64) {
               app.dapp.confirm(sent);
               app.dapp.dismiss();
@@ -422,7 +422,7 @@ export default {
       const app = this;
       localStorage.setItem("default", wallet);
       app.wallet = await app.user.auth();
-      let balance = await app.scrypta.get("/balance/" + app.wallet.master);
+      let balance = await app.bdcash.get("/balance/" + app.wallet.master);
       app.balance = balance.balance;
       app.dapp.dismiss();
       app.tosign = {};

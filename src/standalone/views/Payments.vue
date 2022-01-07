@@ -26,7 +26,7 @@
                 placeholder="Select a character"
                 expanded
               >
-                <option value="LYRA">Scrypta (LYRA)</option>
+                <option value="BDCASH">BDCash Protocol (BDCASH)</option>
                 <option
                   v-for="sidechain in sidechains"
                   v-bind:key="sidechain.address"
@@ -91,7 +91,7 @@
 </template>
 
 <script>
-let ScryptaCore = require("@scrypta/core");
+let BDCashCore = require("@bdcash-protocol/core");
 import User from "../../libs/user";
 import VueQrcode from 'vue-qrcode'
 
@@ -100,7 +100,7 @@ export default {
   name: "Payments",
   data() {
     return {
-      scrypta: new ScryptaCore(true),
+      bdcash: new BDCashCore(true),
       address: "",
       wallet: "",
       sidechains: [],
@@ -112,10 +112,10 @@ export default {
       isSending: false,
       searcher: "",
       assetbalance: 0,
-      selectedasset: "LYRA",
+      selectedasset: "BDCASH",
       payment: {
         to: "",
-        asset: "LYRA",
+        asset: "BDCASH",
         amount: "",
         memo: "",
       },
@@ -137,14 +137,14 @@ export default {
   async mounted() {
     const app = this;
     app.wallet = await User.auth();
-    app.scrypta.staticnodes = true
+    app.bdcash.staticnodes = true
     app.isLogging = false;
-    let balancelyra = await app.scrypta.get("/balance/" + app.wallet.master);
-    app.assetbalance = balancelyra.balance;
+    let balancebdcash = await app.bdcash.get("/balance/" + app.wallet.master);
+    app.assetbalance = balancebdcash.balance;
     let ban = ["register:turinglabs"]
-    let address = await app.scrypta.createAddress('-', false)
-    let request = await app.scrypta.createContractRequest(address.walletstore, '-', { contract: "LcD7AGaY74xvVxDg3NkKjfP6QpG8Pmxpnu", function: "names", params: {} })
-    let response = await app.scrypta.sendContractRequest(request)
+    let address = await app.bdcash.createAddress('-', false)
+    let request = await app.bdcash.createContractRequest(address.walletstore, '-', { contract: "LcD7AGaY74xvVxDg3NkKjfP6QpG8Pmxpnu", function: "names", params: {} })
+    let response = await app.bdcash.sendContractRequest(request)
     let registered = []
     for (let k in response) {
       if (response[k].owner !== app.wallet.master && registered.indexOf(response[k].name) === -1) {
@@ -166,13 +166,13 @@ export default {
     },
     selectedasset: async function (change) {
       const app = this;
-      if (change === "LYRA") {
-        let balancelyra = await app.scrypta.get(
+      if (change === "BDCASH") {
+        let balancebdcash = await app.bdcash.get(
           "/balance/" + app.wallet.master
         );
-        app.assetbalance = balancelyra.balance;
+        app.assetbalance = balancebdcash.balance;
       } else {
-        let balanceplanum = await app.scrypta.post("/sidechain/balance", {
+        let balanceplanum = await app.bdcash.post("/sidechain/balance", {
           dapp_address: app.wallet.master,
           sidechain_address: change,
         });
@@ -183,13 +183,13 @@ export default {
   methods: {
     fetchSidechains() {
       const app = this;
-      app.scrypta
+      app.bdcash
         .post("/sidechain/scan/address", { dapp_address: app.wallet.master })
         .then(async (response) => {
           let sidechains = [];
           for (let x in response.data) {
             let sidechain = response.data[x];
-            let details = await app.scrypta.post("/sidechain/get", {
+            let details = await app.bdcash.post("/sidechain/get", {
               sidechain_address: sidechain.sidechain,
             });
             let parsed = {
@@ -215,7 +215,7 @@ export default {
     },
     setMax() {
       const app = this;
-      if (app.selectedasset === "LYRA") {
+      if (app.selectedasset === "BDCASH") {
         app.payment.amount = (app.assetbalance - 0.001).toFixed(8);
       } else {
         app.payment.amount = app.assetbalance;
@@ -238,15 +238,15 @@ export default {
           onConfirm: async (password) => {
             let key;
             if (app.wallet.sid !== undefined) {
-              key = await app.scrypta.readKey(password, app.wallet.sid);
+              key = await app.bdcash.readKey(password, app.wallet.sid);
               if(key !== false){
                 key.sid = app.wallet.sid;
               }
             } else if (app.wallet.xsid !== undefined) {
-              let xkey = await app.scrypta.readxKey(password, app.wallet.xsid);
+              let xkey = await app.bdcash.readxKey(password, app.wallet.xsid);
               if(xkey !== false){
-                key = await app.scrypta.deriveKeyFromSeed(xkey.seed, "m/0");
-                let sid =  await app.scrypta.importPrivateKey(
+                key = await app.bdcash.deriveKeyFromSeed(xkey.seed, "m/0");
+                let sid =  await app.bdcash.importPrivateKey(
                   key.prv,
                   password,
                   false
@@ -258,23 +258,23 @@ export default {
             key.address = SIDS[0];
             if (key !== false) {
               app.isSending = true;
-              if (app.payment.asset !== "LYRA") {
-                app.scrypta.usePlanum(app.payment.asset);
+              if (app.payment.asset !== "BDCASH") {
+                app.bdcash.usePlanum(app.payment.asset);
                 // SENDING ASSET
-                let balance = await app.scrypta.post("/sidechain/balance", {
+                let balance = await app.bdcash.post("/sidechain/balance", {
                   dapp_address: key.address,
                   sidechain_address: app.payment.asset,
                 });
                 if (balance.balance >= parseFloat(app.payment.amount)) {
-                  let balancelyra = await app.scrypta.get(
+                  let balancebdcash= await app.bdcash.get(
                     "/balance/" + key.address
                   );
-                  if (balancelyra.balance >= 0.001) {
+                  if (balancebdcash.balance >= 0.001) {
                     let sxid = false;
                     let success = false;
                     let retries = 0;
                     while (success === false) {
-                      sxid = await app.scrypta.sendPlanumAsset(
+                      sxid = await app.bdcash.sendPlanumAsset(
                         key.sid,
                         password,
                         app.payment.to,
@@ -309,7 +309,7 @@ export default {
                   } else {
                     app.isSending = false;
                     app.$buefy.toast.open({
-                      message: this.$t("payments.notenoughlyra"),
+                      message: this.$t("payments.notenoughbdcash"),
                       type: "is-danger",
                     });
                   }
@@ -321,20 +321,20 @@ export default {
                   });
                 }
               } else {
-                // SENDING LYRA
-                let amountLyraFixed = parseFloat(
+                // SENDING BDCASH
+                let amountBdcashFixed = parseFloat(
                   parseFloat(app.payment.amount).toFixed(8)
                 );
-                let amountLyraNeeded = amountLyraFixed + 0.001;
-                if (amountLyraFixed > 0) {
-                  let balance = await app.scrypta.get(
+                let amountBdcashNeeded = amountBdcashFixed + 0.001;
+                if (amountBdcashFixed > 0) {
+                  let balance = await app.bdcash.get(
                     "/balance/" + key.address
                   );
-                  if (balance.balance >= amountLyraNeeded) {
+                  if (balance.balance >= amountBdcashNeeded) {
                     let sendsuccess = false;
                     let valid = false;
                     let yy = 0;
-                    let checkto = await app.scrypta.get(
+                    let checkto = await app.bdcash.get(
                       "/validate/" + app.payment.to
                     );
                     if (
@@ -342,11 +342,11 @@ export default {
                       checkto.data.isvalid === "true"
                     ) {
                       while (sendsuccess === false) {
-                        let txid = await app.scrypta.send(
+                        let txid = await app.bdcash.send(
                           key.sid,
                           password,
                           app.payment.to,
-                          amountLyraFixed,
+                          amountBdcashFixed,
                           app.payment.memo
                         );
                         if (

@@ -20,8 +20,8 @@ const routes = [
     component: () => import(/* webpackChunkName: "receive" */ '../standalone/views/Portfolio.vue')
   },
   {
-    path: '/planum/:chain',
-    name: 'Planum',
+    path: '/devchain/:chain',
+    name: 'devchain',
     component: () => import(/* webpackChunkName: "receive" */ '../standalone/views/Planum.vue')
   },
   {

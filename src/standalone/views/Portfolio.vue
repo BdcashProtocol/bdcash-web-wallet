@@ -61,14 +61,14 @@
 </template>
 
 <script>
-let ScryptaCore = require("@scrypta/core");
+let BDCashCore = require("@bdcash-protocol/core");
 import User from "../../libs/user";
 
 export default {
   name: "Portfolio",
   data() {
     return {
-      scrypta: new ScryptaCore(true),
+      bdcash: new BDCashCore(true),
       address: "",
       wallet: "",
       sidechains: [],
@@ -91,7 +91,7 @@ export default {
   async mounted() {
     const app = this;
     app.wallet = await User.auth();
-    app.scrypta.staticnodes = true
+    app.bdcash.staticnodes = true
     app.isLogging = false;
     if (navigator.userAgent.indexOf("Firefox") === -1) {
       if(chrome !== undefined && chrome.runtime !== undefined && chrome.runtime.getURL !== undefined){
@@ -108,13 +108,13 @@ export default {
   methods: {
     fetchSidechains() {
       const app = this;
-      app.scrypta
+      app.bdcash
         .post("/sidechain/scan/address", { dapp_address: app.wallet.master })
         .then(async (response) => {
           let sidechains = [];
           for (let x in response.data) {
             let sidechain = response.data[x];
-            let details = await app.scrypta.post("/sidechain/get", {
+            let details = await app.bdcash.post("/sidechain/get", {
               sidechain_address: sidechain.sidechain,
             });
             let parsed = {

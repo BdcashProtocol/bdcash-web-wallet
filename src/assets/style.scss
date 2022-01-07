@@ -1,5 +1,5 @@
 @import "~bulma/sass/utilities/_all";
-$primary: #D8213B;
+$primary: #d8a721;
 $primary-invert: findColorInvert($primary);
 $twitter: #4099FF;
 $twitter-invert: findColorInvert($twitter);
@@ -41,7 +41,10 @@ $colors: (
     "danger": ($danger, $danger-invert),
     "twitter": ($twitter, $twitter-invert)
 );
+body{
+background: #dabe43;
 
+}
 body, html{
     font-family: 'Sen';
 }

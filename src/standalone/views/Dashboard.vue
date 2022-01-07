@@ -8,15 +8,15 @@
 <script>
   let BDCashCore = require("@bdcash-protocol/core");
   import User from '../../libs/user'
-  import LyraDash from '../../components/LyraDash'
+  import BdcashDash from '../../components/BdcashDash'
   import AssetDash from '../../components/AssetDash'
 
   export default {
     name: 'Dashboard',
-    components: { LyraDash, AssetDash },
+    components: { BdcashDash, AssetDash },
     data() {
       return {
-        scrypta: new BDCashCore(true),
+        bdcash: new BDCashCore(true),
         configs: {},
         wallet: "",
         isLogging: true,
@@ -25,7 +25,7 @@
     },
     async mounted() {
       const app = this
-      app.scrypta.staticnodes = true
+      app.bdcash.staticnodes = true
       app.wallet = await User.auth()
       if(app.wallet !== false){
         app.configs = await User.configs()

@@ -15,7 +15,7 @@
         v-bind:key="data.uuid"
         style="margin-bottom: 15px"
       >
-        <a v-if="data.protocol !== 'chain://'" :href="'https://proof.scryptachain.org/#/uuid/' + data.uuid" target="_blank">
+        <a v-if="data.protocol !== 'chain://'" :href="'https://proof.bdcashprotocol.com/#/uuid/' + data.uuid" target="_blank">
           <div class="card">
             <div class="card-content text-left" style="padding: 10px">
               <div class="media">
@@ -137,17 +137,17 @@
 </template>
 
 <script>
-let ScryptaCore = require("@scrypta/core");
+let BDCashCore = require("@bdcash-prptocol/core");
 import User from "../../libs/user";
-import ScryptaDB from "../../libs/db";
+import BdcashDB from "../../libs/db";
 const crypto = require('crypto')
 
 export default {
   name: "Notarize",
   data() {
     return {
-      scrypta: new ScryptaCore(true),
-      db: new ScryptaDB(true),
+      bdcash: new BDCashCore(true),
+      db: new BdcashDB(true),
       showNotarize: false,
       address: "",
       wallet: "",
@@ -169,7 +169,7 @@ export default {
   },
   async mounted() {
     const app = this;
-    app.scrypta.staticnodes = true
+    app.bdcash.staticnodes = true
     app.wallet = await User.auth();
     app.isLogging = false;
     app.fetchIdentities();
@@ -183,7 +183,7 @@ export default {
     },
     async fetchWritten() {
       const app = this;
-      let written = await app.scrypta.post("/read", {
+      let written = await app.bdcash.post("/read", {
         address: app.wallet.master,
       });
       app.written = written.data;
@@ -233,15 +233,15 @@ export default {
             let key;
             let SIDS
             if (app.wallet !== false && app.wallet.sid !== undefined) {
-              key = await app.scrypta.readKey(password, app.wallet.sid);
+              key = await app.bdcash.readKey(password, app.wallet.sid);
               if (key !== false) {
                 key.sid = app.wallet.sid;
               }
             } else if (app.wallet.xsid !== undefined) {
-              let xkey = await app.scrypta.readxKey(password, app.wallet.xsid);
+              let xkey = await app.bdcash.readxKey(password, app.wallet.xsid);
               if (xkey !== false) {
-                key = await app.scrypta.deriveKeyFromSeed(xkey.seed, "m/0");
-                let importkey = await app.scrypta.importPrivateKey(
+                key = await app.bdcash.deriveKeyFromSeed(xkey.seed, "m/0");
+                let importkey = await app.bdcash.importPrivateKey(
                   key.prv,
                   password,
                   false
@@ -260,7 +260,7 @@ export default {
                 app.notarize.encrypt === true ||
                 app.notarize.encrypt === "true"
               ) {
-                rawdata = await app.scrypta.cryptData(
+                rawdata = await app.bdcash.cryptData(
                   rawdata,
                   app.notarize.password
                 );
@@ -268,11 +268,11 @@ export default {
               }
 
               let estimatedlength = rawdata + "***" + app.notarize.title;
-              let fees = Math.ceil(estimatedlength.length / 7500) * 0.001;
-              let balance = await app.scrypta.get("/balance/" + key.address);
+              let fees = Math.ceil(estimatedlength.length / 7500) * 1;
+              let balance = await app.bdcash.get("/balance/" + key.address);
 
               if (balance.balance >= parseFloat(fees)) {
-                let written = await app.scrypta.write(
+                let written = await app.bdcash.write(
                   key.sid,
                   password,
                   rawdata,

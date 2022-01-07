@@ -21,7 +21,7 @@
         "transactionerror": "Error while sending transaction, retry."
     },
     "create": {
-        "hello": "Create new Scrypta Identity",
+        "hello": "Create new BDcash Identity",
         "instructions": "Ready to create a new wallet?",
         "password": {
             "insert": "Select a new password",

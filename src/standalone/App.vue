@@ -229,7 +229,7 @@ export default {
   data() {
     return {
       standaloneURL: "",
-      scrypta: new BDCashCore(true),
+      bdcash: new BDCashCore(true),
       db: new BdcashDB(true),
       user: User,
       error: false,
@@ -280,7 +280,7 @@ export default {
       const app = this;
       localStorage.setItem("default", wallet);
       app.wallet = await app.user.auth();
-      let balance = await app.scrypta.get("/balance/" + app.wallet.master);
+      let balance = await app.bdcash.get("/balance/" + app.wallet.master);
       app.balance = balance.balance;
       location.reload();
     },
@@ -307,7 +307,7 @@ export default {
   font-size: 12px;
 }
 html {
-  background-color: #edeae5 !important;
+  background-color: #f5d56d !important;
   background-size: cover;
   background-position: center;
   background-attachment: fixed !important;

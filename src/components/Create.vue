@@ -150,11 +150,11 @@
 .taginput .is-active.taginput-container.is-focusable,
 .is-active.textarea,
 .is-active.input {
-  border-bottom: 2px solid #d8213b !important;
+  border-bottom: 2px solid #d8ad21 !important;
 }
 </style>
 <script>
-const ScryptaCore = require("@scrypta/core");
+const BDCashCore = require("@bdcash-protocol/core");
 const User = require("../libs/user");
 import passwordMeter from "vue-simple-password-meter";
 
@@ -164,7 +164,7 @@ export default {
   data() {
     return {
       standaloneURL: "",
-      scrypta: new ScryptaCore(true),
+      bdcash: new BDCashCore(true),
       user: User,
       recover: false,
       logins: false,
@@ -192,7 +192,7 @@ export default {
         app.password !== "" &&
         app.password.length > 0
       ) {
-        app.newSeed = await app.scrypta.buildxSid(
+        app.newSeed = await app.bdcash.buildxSid(
           app.password,
           "latin",
           true,

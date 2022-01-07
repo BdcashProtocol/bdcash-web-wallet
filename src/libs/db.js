@@ -1,4 +1,4 @@
-module.exports = class ScryptaDB {
+module.exports = class BdcashDB {
     constructor(isBrowser = false){
         const db = this 
         db.isBrowser = isBrowser
